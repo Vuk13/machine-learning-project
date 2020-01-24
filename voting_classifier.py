@@ -26,5 +26,16 @@ for sheet_name in xls.sheet_names:
 X = sheet_to_df_map['temp.'].iloc[:, 1:15].values
 Y = sheet_to_df_map['temp.'].iloc[:, 15].values
 
+clf1 = LogisticRegression(random_state = 1)
+clf2 = RandomForestClassifier(random_state = 1)
+clf3 = GaussianNB()
 
+print ('5-fold cross validation: \n')
+
+labels = ['Logistic regression', 'Random forest', 'Naive Bayes']
+
+for clf, label in zip([clf1, clf2, clf3], labels):
+    scores = model_selection.cross_val_score(clf, X, Y, cv =5, scoring = 'accuracy')
+    
+    print("Accuracy: %0.2f (+/- %0.2f) [%s]" % (scores.mean(), scores.std(), label))
    

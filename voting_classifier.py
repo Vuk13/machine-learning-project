@@ -30,10 +30,10 @@ print ('dolazi do skipa')
 sheet_to_df_map['temp.'].fillna(0,inplace = True) # zamijenimo NaN sa nulama    
 # uzimamo vrijednosti od 1 do 15 po kolonama
 print ('dolazi do zamjene nan-a sa nulama')
-X = sheet_to_df_map['temp.'].iloc[:, 2:15].values
+X = sheet_to_df_map['temp.'].iloc[0::3, 2:15].values
 print ('dolazi do pakovanja X-a')
 # uzimamo prvih 15 redova
-Y = sheet_to_df_map['temp.'].iloc[:, 14].values
+Y = sheet_to_df_map['temp.'].iloc[0::3, 14].values
 print ('dolazi pakovanja Y-a')
 
 for num in X:
@@ -68,6 +68,22 @@ labels = ['Logistic regression', 'Random forest', 'Naive Bayes']
 print ('prolazi labele')
 for clf, label in zip([clf1, clf2, clf3], labels):
     print ('upada u petlju')
-    scores = model_selection.cross_val_score(clf, Xmultiplied, Ymultiplied, cv =2, scoring = 'accuracy')
+    scores = model_selection.cross_val_score(clf, Xmultiplied, Ymultiplied, cv = 2, scoring = 'accuracy')
     print("Accuracy: %0.2f (+/- %0.2f) [%s]" % (scores.mean(), scores.std(), label))
-   
+
+#hard voting algoritam   
+voting_clf_hard = VotingClassifier(estimators = [(labels[0], clf1),
+                                                 (labels[1], clf2),
+                                                 (labels[2],clf3)], voting = 'hard')
+#soft voting algoritam
+voting_clf_soft = VotingClassifier(estimators = [(labels[0], clf1),
+                                                 (labels[1], clf2),
+                                                 (labels[2],clf3)], voting = 'soft')
+
+labels_new = ['Logistic Regression', 'Random forest', 'Naive bayes', 'Voting Classifier Hard', 'Voting Classifier Soft']
+for (clf, label) in zip([clf1,clf2,clf3, voting_clf_hard,voting_clf_soft], labels_new):
+    scores = model_selection.cross_val_score(clf, Xmultiplied, Ymultiplied, cv = 2, scoring = 'accuracy')
+    print("Accuracy: %0.2f (+/- %0.2f) [%s]" % (scores.mean(), scores.std(), label))
+
+
+    

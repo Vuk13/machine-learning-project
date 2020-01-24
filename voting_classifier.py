@@ -28,7 +28,7 @@ for sheet_name in xls.sheet_names:
 
 print ('dolazi do skipa')
 sheet_to_df_map['temp.'].fillna(0,inplace = True) # zamijenimo NaN sa nulama    
-# uzimamo vrijednosti od 1 do 15 po kolonama
+# uzimamo svaku trecu godinu za podatke
 print ('dolazi do zamjene nan-a sa nulama')
 X = sheet_to_df_map['temp.'].iloc[0::3, 2:15].values
 print ('dolazi do pakovanja X-a')

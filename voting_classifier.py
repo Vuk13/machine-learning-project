@@ -15,6 +15,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import VotingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import MultinomialNB
 warnings.filterwarnings("ignore")
 
 
@@ -27,13 +28,13 @@ for sheet_name in xls.sheet_names:
 
 
 print ('dolazi do skipa')
-sheet_to_df_map['temp.'].fillna(0,inplace = True) # zamijenimo NaN sa nulama    
+sheet_to_df_map['rel.vlaznost'].fillna(0,inplace = True) # zamijenimo NaN sa nulama    
 # uzimamo svaku trecu godinu za podatke
 print ('dolazi do zamjene nan-a sa nulama')
-X = sheet_to_df_map['temp.'].iloc[0::3, 2:15].values
+X = sheet_to_df_map['rel.vlaznost'].iloc[0::3, 2:15].values
 print ('dolazi do pakovanja X-a')
 # uzimamo prvih 15 redova
-Y = sheet_to_df_map['temp.'].iloc[0::3, 14].values
+Y = sheet_to_df_map['rel.vlaznost'].iloc[0::3, 14].values
 print ('dolazi pakovanja Y-a')
 
 for num in X:
@@ -61,16 +62,16 @@ for iks in Ymultiplied:
 clf1 = LogisticRegression(random_state = 1)
 clf2 = RandomForestClassifier(random_state = 1)
 clf3 = GaussianNB()
+clf4 = MultinomialNB()
+print ('2-fold cross validation: \n')
 
-print ('5-fold cross validation: \n')
-
-labels = ['Logistic regression', 'Random forest', 'Naive Bayes']
+labels = ['Logistic regression', 'Random forest', 'Gausian Naive Bayes', 'Multinomial Naive Bayes']
 print ('prolazi labele')
-for clf, label in zip([clf1, clf2, clf3], labels):
+for clf, label in zip([clf1, clf2, clf3, clf4], labels):
     print ('upada u petlju')
     scores = model_selection.cross_val_score(clf, Xmultiplied, Ymultiplied, cv = 2, scoring = 'accuracy')
     print("Accuracy: %0.2f (+/- %0.2f) [%s]" % (scores.mean(), scores.std(), label))
-
+# std standard deviation along the specified axis
 #hard voting algoritam   
 voting_clf_hard = VotingClassifier(estimators = [(labels[0], clf1),
                                                  (labels[1], clf2),
